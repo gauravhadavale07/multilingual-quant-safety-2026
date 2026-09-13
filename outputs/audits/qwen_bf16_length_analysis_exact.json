@@ -1,0 +1,24 @@
+{
+  "total_output_chars": 3611926,
+  "contains_think": 3150,
+  "contains_think_close": 525,
+  "reasoning_only_count": 2625,
+  "token_count_distribution": {
+    "min": 147,
+    "max": 260,
+    "p50": 256,
+    "p75": 256,
+    "p90": 256,
+    "p95": 256,
+    "p99": 256
+  },
+  "reasoning_length_distribution": {
+    "min": 82,
+    "max": 259,
+    "p50": 255,
+    "p75": 255,
+    "p90": 255,
+    "p95": 255,
+    "p99": 255
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "wg_distribution": {
+    "REFUSAL": 1671,
+    "COMPLIANCE": 1479
+  },
+  "repaired_rule_distribution": {
+    "REFUSAL": 1396,
+    "COMPLIANCE": 1750,
+    "AMBIGUOUS": 4
+  },
+  "agreement": 2700,
+  "disagreement": 450,
+  "per_language_agreement": {
+    "en": {
+      "agree": 296,
+      "disagree": 19
+    },
+    "zh": {
+      "agree": 298,
+      "disagree": 17
+    },
+    "it": {
+      "agree": 291,
+      "disagree": 24
+    },
+    "vi": {
+      "agree": 293,
+      "disagree": 22
+    },
+    "ar": {
+      "agree": 293,
+      "disagree": 22
+    },
+    "ko": {
+      "agree": 276,
+      "disagree": 39
+    },
+    "th": {
+      "agree": 276,
+      "disagree": 39
+    },
+    "bn": {
+      "agree": 261,
+      "disagree": 54
+    },
+    "sw": {
+      "agree": 295,
+      "disagree": 20
+    },
+    "jv": {
+      "agree": 121,
+      "disagree": 194
+    }
+  },
+  "completed_only_agreement": 2700
+}

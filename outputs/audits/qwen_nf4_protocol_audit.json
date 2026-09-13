@@ -1,0 +1,81 @@
+{
+  "audit_timestamp_utc": "2026-08-20T20:10:00.000000+00:00",
+  "audit_task": "TASK 31 — AUDIT AND CORRECT QWEN NF4 PROTOCOL MISMATCH",
+  "status": "FAIL",
+  "decision": "PRIMARY NF4 COMPARISON = INVALID FOR CONFIRMATORY USE",
+  "nf4_v1_role": "diagnostic only",
+  "root_cause_analysis": {
+    "classification": "A. accidental implementation drift / protocol discrepancy between frozen artifact metadata and Task specification",
+    "details": "The Qwen BF16 v4 baseline artifact (metadata.json and raw_generations.jsonl) had recorded max_new_tokens=2048 from the v4 non-thinking amendment. When the NF4 v1 runner (scripts/run_qwen_nf4_v1.py) was constructed, it matched the 2048 setting found in qwen_bf16_v4/metadata.json rather than adhering to the explicit max_new_tokens=8192 requirement stated in the Task 30 prompt specification. Consequently, NF4 v1 completed with max_new_tokens=2048.",
+    "impact": "NF4 v1 is preserved as an immutable diagnostic artifact (tier1_multijail_nf4_qwen3_4b_v1) and is marked INVALID for primary confirmatory hypothesis testing."
+  },
+  "protocol_comparison": {
+    "model_id": {
+      "bf16_v4": "Qwen/Qwen3-4B",
+      "nf4_v1": "Qwen/Qwen3-4B",
+      "matched": true
+    },
+    "model_revision": {
+      "bf16_v4": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "nf4_v1": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "matched": true
+    },
+    "dataset": {
+      "bf16_v4": "MultiJail",
+      "nf4_v1": "MultiJail",
+      "matched": true
+    },
+    "dataset_revision": {
+      "bf16_v4": "577ac511437e07a256130945ef312a99158a18ad",
+      "nf4_v1": "577ac511437e07a256130945ef312a99158a18ad",
+      "matched": true
+    },
+    "enable_thinking": {
+      "bf16_v4": false,
+      "nf4_v1": false,
+      "matched": true
+    },
+    "do_sample": {
+      "bf16_v4": false,
+      "nf4_v1": false,
+      "matched": true
+    },
+    "max_new_tokens": {
+      "task_specification": 8192,
+      "bf16_v4_artifact": 2048,
+      "nf4_v1_artifact": 2048,
+      "matched_task_spec": false,
+      "matched_bf16_artifact": true
+    },
+    "evaluator_model": {
+      "bf16_v4": "allenai/wildguard",
+      "nf4_v1": "allenai/wildguard",
+      "matched": true
+    },
+    "evaluator_revision": {
+      "bf16_v4": "cbba4823f3e8020e5a74a5e29bf85072def6f2ff",
+      "nf4_v1": "cbba4823f3e8020e5a74a5e29bf85072def6f2ff",
+      "matched": true
+    },
+    "language_set": {
+      "bf16_v4": ["en", "zh", "it", "vi", "ar", "ko", "th", "bn", "sw", "jv"],
+      "nf4_v1": ["en", "zh", "it", "vi", "ar", "ko", "th", "bn", "sw", "jv"],
+      "matched": true
+    }
+  },
+  "nf4_v2_preparation": {
+    "run_id": "tier1_multijail_nf4_qwen3_4b_v2",
+    "model_id": "Qwen/Qwen3-4B",
+    "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+    "dataset_revision": "577ac511437e07a256130945ef312a99158a18ad",
+    "languages": ["en", "zh", "it", "vi", "ar", "ko", "th", "bn", "sw", "jv"],
+    "enable_thinking": false,
+    "do_sample": false,
+    "max_new_tokens": 8192,
+    "seed": 42,
+    "evaluator": "allenai/wildguard@cbba4823f3e8020e5a74a5e29bf85072def6f2ff",
+    "quantization": "bitsandbytes NF4 (load_in_4bit=True, bnb_4bit_quant_type='nf4', bnb_4bit_compute_dtype=torch.bfloat16)",
+    "runner_script": "scripts/run_qwen_nf4_v2.py",
+    "launch_status": "prepared_not_launched"
+  }
+}

@@ -1,0 +1,12 @@
+Language,Tier,Total,Primary usable,WildGuard refusal,WildGuard compliance,WildGuard unmapped,True excluded,Primary refusal rate
+en,HRL,315,315,216,99,0,0,0.6857
+zh,HRL,315,315,198,117,0,0,0.6286
+it,HRL,315,314,160,154,0,1,0.5096
+vi,HRL,315,314,153,161,0,1,0.4873
+ar,MRL,315,311,148,163,0,4,0.4759
+ko,MRL,315,307,128,179,0,8,0.4169
+th,MRL,315,314,175,139,0,1,0.5573
+bn,LRL,315,246,107,139,0,69,0.4350
+sw,LRL,315,18,0,18,0,297,0.0000
+jv,LRL,315,293,61,232,0,22,0.2082
+Overall,ALL,3150,2747,1346,1401,0,403,0.4900

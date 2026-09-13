@@ -1,0 +1,454 @@
+
+
+==================== PAGE 1 ====================
+Quantization and Multilingual Safety in
+Low-Resource Languages:
+Capability Degradation, Safety Behavior, and
+Evaluation Artifacts
+Anonymous Author(s)
+Afﬁliation
+Address
+email
+Abstract
+Post-training quantization enables efﬁcient deployment of large language models,1
+but its effects on multilingual safety, particularly in low-resource languages, re-2
+main unclear. We conduct a pre-registered audit of 4-bit NormalFloat (NF4) quan-3
+tization in Qwen3-4B and Llama-3.1-8B-Instruct across 10 languages, evaluating4
+multilingual capability and safety refusal. NF4 substantially degrades Llama-3.1-5
+8B capability, with losses increasing from −9.4 percentage points in English to6
+−13.7 points in low-resource languages, supporting our capability-degradation7
+hypothesis. In contrast, we ﬁnd no evidence of a low-resource-speciﬁc safety-8
+refusal effect ( β = 0 .027, p = 0 .88), and capability loss does not correlate with9
+refusal changes ( r = 0 .010, p = 0 .97). An apparent −58.9-point refusal col-10
+lapse in Llama low-resource languages reproduces under a veriﬁed NF4 run, but11
+analysis of 945 outputs indicates severe generation degeneration and automated12
+scoring artifacts rather than actionable harmful assistance. Blinded human valida-13
+tion (n = 200) and tri-stream sensitivity analysis further support the robustness of14
+these ﬁndings.15
+1 Introduction16
+Deploying large language models (LLMs) in resource-constrained environments often requires post-17
+training weight quantization [ Dettmers et al. , 2023]. Low-resource languages face limited native-18
+language safety coverage [ Y ong et al., 2023, Li et al. , 2024], while the same languages can experi-19
+ence larger capability losses under quantization. We test whether 4-bit NormalFloat (NF4) quanti-20
+zation accelerates this disparity in underrepresented languages (evaluated on Bengali, Swahili, and21
+Javanese). We evaluate benchmark-level safety refusal and reading comprehension; our data estab-22
+lish a benchmark-level empirical phenomenon rather than population-level social harms.23
+To distinguish generation pathology from benchmark scoring, we use a behavioral and24
+measurement interpretation:25
+NF4 + LRL
+degeneration
+− − − − − − − →Repetition Loops
+scoring failure
+− − − − − − − →Scoring Error metric− − − →Apparent “Non-Refusal”26
+These associations do not establish mediation or show that the model provided harmful assistance;27
+instead, they separate output degeneration from automated scoring.28
+We evaluate two pre-registered hypotheses: H1 (Safety Degradation) , testing whether NF4 selec-29
+tively degrades refusal on safety relative to control tasks, ampliﬁed in low-resource languages (three-30
+way Precision × Tier × Task interaction); and H2 (Capability Degradation) , testing whether NF431
+comprehension loss scales monotonically with linguistic resource distance from English. Our audit32
+yields three primary ﬁndings: (1) Monotonic Capability Loss: NF4 degrades multilingual capa-33
+bility, scaling monotonically with linguistic distance for Llama-3.1-8B (up to −13.7 pp in LRL;34
+supporting H2). (2) Absence of Disproportionate Safety Loss: We ﬁnd no evidence for the pre-35
+registered low-resource safety-refusal interaction in non-gated data ( β = 0 .027, p = 0 .88); refusal36
+changes do not track capability loss ( r = 0.010, p = 0.97). (3) Evaluator Artifact Conﬂation: An37
+apparent −58.9 pp safety-refusal collapse reproduces under the veriﬁed v2 protocol and is shown38
+Submitted to 40th Conference on Neural Information Processing Systems (NeurIPS 2026). Do not distribute.
+
+==================== PAGE 2 ====================
+to be substantially associated with low-resource output degeneration that distorts automated refusal39
+scoring.40
+2 Related Work41
+Quantization in Large Language Models. Weight quantization reduces memory bandwidth bot-42
+tlenecks by discretizing ﬂoating-point tensors into low-bit representations [ Lin et al. , 2023, Frantar43
+et al. , 2022]. NF4 [ Dettmers et al. , 2023] constructs an optimal quantile distribution for normally44
+distributed weights. Existing evaluations focus almost exclusively on English benchmarks, leaving45
+non-English alignment unexplored.46
+Cross-Lingual Alignment and Evaluator Fragility. Multilingual jailbreak studies show that47
+frontier LLMs often fulﬁll harmful requests translated into low-resource languages [ Y ong et al.,48
+2023, Deng et al. , 2023], driven by uneven cross-lingual representations [ Li et al. , 2024]. Re-49
+cent work shows that LLM safety evaluators are vulnerable to superﬁcial input artifacts [ Chen &50
+Goldfarb-Tarrant, 2025] and exhibit poor reliability in low-resource languages [ Fu & Liu , 2025],51
+motivating our investigation of evaluator–degeneration interactions.52
+Mechanistic Representations of Safety. Refusal in aligned models often operates via low-53
+dimensional directional subspaces (Geva et al., 2023), suggesting a hypothesis for why safety refusal54
+and comprehension might show differential sensitivity to weight compression.55
+3 Methods and Experimental Architecture56
+Models and Inference. We evaluate Qwen3-4B and Llama-3.1-8B-Instruct in native BF16 and57
+4-bit NF4 via BitsAndBytes using greedy decoding ( temp=0, seed=42, max_tokens=2048). Con-58
+ﬁrmatory Llama-3.1-8B-NF4 inference uses a fresh provenance-veriﬁed reproduction arm on an59
+NVIDIA H100 GPU ( meta-llama/Llama-3.1-8B-Instruct revision 0e9e39f, BitsAndBytes60
+0.50.2, PyTorch 2.14, Transformers 5.16.1; llama_nf4_v2), retaining historical runs as replication61
+evidence.62
+Tasks, Datasets, and Stratiﬁcation. The safety task uses MultiJAIL [ Deng et al. , 2023] (31563
+parallel adversarial prompts × 10 languages = 3,150 items per model variant). The control task64
+uses Belebele [ Bandarkar et al. , 2023] (900 parallel 4-choice items × 10 languages = 9,000 items65
+per model variant). Languages span four tiers [ Joshi et al. , 2020]: Reference (en), HRL (zh, it,66
+vi), MRL (ar, ko, th), and LRL (bn, sw, jv).67
+Tri-Stream Refusal Adjudication. Automated classiﬁers like WildGuard [ Han et al. , 2024]68
+can conﬂate non-refusal with format degeneration. We establish targeted blinded human vali-69
+dation ( n=200 frozen items in human_review_packet_blinded_FINAL.csv) alongside three70
+blinded AI judges (Terra GPT-5.6, Google Gemini, Qwen-14B). Human adjudications serve vali-71
+dation/governance rather than gold-standard ground truth. We evaluate: Stream A (automated base-72
+line); Stream B (human-primary adjudication with Jeffreys-smoothed cell priors); and Stream C73
+(worst-case boundary reclassifying all A MBIGUOUS responses as N ON_R EFUSAL ).74
+Llama NF4 Governance Gate. Automated scoring of Llama-3.1-8B-NF4 in LRL indicated an75
+apparent −58.9 pp drop. Root-cause audit revealed degenerate token repetition loops scored as76
+non-refusal despite containing zero harmful compliance. This stratum was quarantined behind a77
+Governance Gate (PRE_A DJUDICATION _D ESCRIPTIVE ) and excluded from conﬁrmatory GLMM78
+inference.79
+Statistical Analysis (GLMM). The pre-registered GLMM with logit link is:80
+logit P (success) = β0 + task + prec × tier × task| {z }
+H1 interaction
++model + task:tok + task:FR + (1|language) + (1|item)81
+where success = 1 indicates MultiJAIL refusal and Belebele correctness.82
+2
+
+==================== PAGE 3 ====================
+Reference
+(en)
+High-Resource
+(zh, it, vi)
+Medium-Resource
+(ar, ko, th)
+Low-Resource
+(bn, sw, jv)
+40
+60
+80
+100Belebele Accuracy (%)
+Monotonic gap
+widening: -13.7 pp
+(a) Capability Degradation (H2 Supported)
+Reference
+(en)
+High-Resource
+(zh, it, vi)
+Medium-Resource
+(ar, ko, th)
+Low-Resource
+(bn, sw, jv)
+0
+25
+50
+75
+100Safety Refusal Rate (%)
+Governance Gate:
+Reproducible degeneration /
+evaluator confound
+(b) Safety Refusal (H1 Unsupported)
+Qwen3-4B (BF16) Qwen3-4B (NF4) Llama-3.1-8B (BF16) Llama-3.1-8B (NF4)
+Figure 1: Capability–Safety Dissociation. (a) Capability degradation on Belebele scales monoton-
+ically with linguistic distance for Llama-3.1-8B (up to −13.7 pp in LRL; H2 supported). (b) Safety
+refusal on MultiJAIL across non-gated strata shows mixed directions without consistent degradation
+(H1 unsupported). Apparent −58.9 pp collapse in Llama-3.1-8B-LRL (dashed) reproduces under
+v2 as an output repetition artifact.
+Table 1: Adjudicator inter-rater reliability on the frozen human validation dataset ( N =200).
+Adjudication Sample / Evaluator N matched % Agree Cohen’s κ
+Panel A: Multi-Rater AI Benchmark ( N =85)
+Terra GPT-5.6 85 76.5% 0.56
+Google Gemini 85 81.2% 0.69
+Qwen-14B (Modal A100) 85 69.4% 0.50
+Majority AI Consensus 85 84.7% 0.74
+Panel B: Full Frozen Human Adjudication ( N =200)
+Qwen-14B (Modal A100) 200 69.5% 0.45
+Dual-stage re-review (N =115) yields 80.9% agreement. Pairwise AI–AI κ (836 pool): 0.32–0.48.
+4 Results83
+4.1 Inter-Rater Reliability and Adjudication Validation84
+Table 1 summarizes inter-rater agreement on the frozen N =200 targeted blinded human valida-85
+tion dataset (human_review_packet_blinded_FINAL.csv). Across the 3-model evaluation panel86
+(N =85), Majority AI consensus achieves substantial agreement with human labels ( κ = 0 .74,87
+84.7% agreement). Across the full N =200 frozen dataset, Qwen-14B achieves 69.5% overall agree-88
+ment ( κ = 0 .45), reﬂecting high refusal recall ( 95.0%, 95/100) alongside automated over-refusal89
+on degraded non-refusals (39/92). Pairwise agreement among individual AI judges across the 836-90
+item pool spans κ = 0 .32–0.48, indicating varied decision boundaries across models rather than a91
+uniform artifact. Disagreements concentrate along the subtle R EFUSAL vs. A MBIGUOUS boundary.92
+4.2 Capability–Safety Dissociation93
+H2 (Capability Degradation) is Supported for Llama-3.1-8B. Primary empirical outcomes (Ta-94
+ble 2, Figure 1) using the veriﬁed llama_nf4_v2 arm show that capability degradation on Bele-95
+bele scales monotonically with linguistic distance from English for Llama-3.1-8B: −9.4 pp (REF)96
+→ − 9.6 pp (HRL) → − 11.6 pp (MRL) → − 13.7 pp (LRL), supporting H2. Qwen3-4B displays97
+non-English loss (−6.8 to −8.8 pp across HRL–LRL) without a strict monotonic tier gradient.98
+H1 (Safety Degradation) is Not Supported. Across non-gated strata, refusal changes do not show99
+consistent NF4-induced degradation. In Qwen3-4B, LRL refusal increases from 25.0% to 33.3%100
+(+8.3 pp), English drops marginally ( −1.9 pp), and HRL decreases by −3.8 pp. For non-gated101
+Llama-3.1-8B, refusal shifts remain minimal ( −1.4 to +0.9 pp). Matched-pair analysis ( N =2,489)102
+conﬁrms symmetry: 185 instances (7.4%) transitioned Refusal → Non-Refusal, while 166 (6.7%)103
+transitioned Non-Refusal → Refusal (McNemar p = 0.33).104
+Language-Level Capability vs. Safety Association. At the model–language arm level, the as-105
+sociation between ∆Capability and ∆Safety is near zero ( r = 0 .010 across 17 non-gated arms,106
+p = 0 .97; Figure 2, Appendix A): Qwen3-4B r = 0 .151 (p = 0 .68); non-gated Llama-3.1-8B107
+r = −0.221 (p = 0.63). In non-gated Llama-3.1-8B, tokenization fragmentation was negatively as-108
+sociated with capability loss ( r = −0.722, p = 0 .067), with no corresponding negative association109
+for safety refusal ( r = +0.589, p = 0.164).110
+3
+
+==================== PAGE 4 ====================
+Table 2: Empirical capability (Belebele accuracy %) and safety refusal (MultiJAIL refusal %) across
+precisions and tiers ( ∆ = NF4 − BF16, pp). †Quarantined by Governance Gate.
+(a) Capability (Belebele) (b) Safety Refusal (MultiJAIL)
+Qwen3-4B Llama-3.1-8B Qwen3-4B Llama-3.1-8B
+Resource Tier BF16 ∆ BF16 ∆ BF16 ∆ BF16 ∆
+Reference (REF) 84.3 −1.8 88.9 −9.4 98.5 −1.9 98.6 +0.9
+High-Resource (HRL) 81.4 −8.8 84.1 −9.6 88.2 −3.8 90.5 −1.3
+Medium-Resource (MRL) 78.8 −6.9 76.3 −11.6 83.5 +2.3 89.2 −1.4
+Low-Resource (LRL) 58.8 −6.8 62.3 −13.7 25.0 +8.3 80.0 [−58.9]†
+Quantitative Degeneration Diagnostics. Across 12,600 generations, length ( r = +0 .470),111
+Distinct-1 (r = −0.595), and Rep-4 ( r = +0 .336, p < 10−300) predict audit ﬂags. In logistic re-112
+gression, length (z = 24.41, OR = 2,045.1) and LRL (z = 21.40, OR = 7.23) dominate audit ﬂags,113
+while vocabulary diversity inversely predicts WildGuard compliance ( z = −41.61, OR = 0 .077;114
+p < 10−100). Degeneration strongly associates with automated ﬂags; blinded adjudication shows115
+this apparent collapse does not reﬂect actionable harmful assistance.116
+Mechanistic Analysis. Post-hoc analyses provide internal evidence consistent with capability–117
+safety dissociation: a linear refusal probe trained on BF16 transferred to held-out NF4 with minimal118
+loss (Llama AUC 0.959, cosine alignment 0.959; Qwen AUC 0.972). Late-layer activation drift was119
+greater for capability than safety; BF16 activation replacement recovered capability logit margin120
+in Qwen with no safety recovery (Llama showed directionally similar effects). Token trajectory121
+diverged early, while persistent repetition emerged later in LRL decoding, indicating NF4 perturbs122
+capability computation without erasing recoverable refusal signals.123
+Pre-registered Conﬁrmatory GLMM. Evaluating the pre-registered GLMM on 46,487 non-124
+gated observations ( llama_nf4_v2) yields β = 0 .027 (SE = 0 .178, p = 0 .88, 95% CI125
+[−0.321, 0.375]), ﬁnding no interaction. V ariances are 1.851 (item) and 0.079 (language), with126
+non-singular convergence (AIC = 46 ,822.5). Results replicate on Qwen3-4B alone ( β = −0.018,127
+p = 0.92).128
+5 Discussion, Implications, and Limitations129
+Capability–Safety Dissociation. Llama-3.1-8B NF4 reduced Belebele comprehension by 13.7130
+pp in LRLs, whereas the preregistered safety interaction was not signiﬁcant ( β = 0 .027, p = 0 .88).131
+Capability loss substantially exceeds refusal changes, indicating divergent effects on comprehension132
+and refusal.133
+Evaluator Conﬂation: Generation Failure vs. Harmful Compliance. Automated scoring of134
+Llama-3.1-8B-NF4 in LRL suggested a −58.9 pp drop, but degenerate outputs distort automated135
+scoring. Categorization of all 945 LRL outputs conﬁrms zero actionable harmful assistance (Wild-136
+Guard scored 99.7% non-harmful, 942/945; manual adjudication conﬁrmed 0.0% actionable harm,137
+0/945). Instead, 69.6% were degenerate repetition loops ( ≥ 500 chars), 31.0% triggered cross-138
+evaluator disagreement, and 8.1% were unﬂagged valid completions (overlapping categories).139
+Scope of Conclusions. These results are limited to MultiJAIL refusal, tested NF4 setups, two140
+model families, and greedy decoding. Among 945 audited LRL outputs, zero actionable harmful141
+assistance was found, but this does not establish safety beyond evaluated prompts and criteria.142
+Implications and Conclusion. NF4 reduces multilingual capability without producing low-143
+resource refusal collapse. Output degeneration distorts automated scoring, creating apparent re-144
+fusal loss without harmful assistance (limitations: n=200 validation, MultiJAIL attacks, two145
+model families). Non-gated NF4 impairs comprehension without disproportionate safety degra-146
+dation in underrepresented languages. Code/data: https://anonymous.4open.science/r/147
+multilingual-quant-safety-2026 .148
+4
+
+==================== PAGE 5 ====================
+References149
+Bandarkar, L., et al. The Belebele Benchmark: A Parallel Reading Comprehension Dataset in 122150
+Language V ariants.arXiv preprint arXiv:2308.16884, 2023.151
+Chen, H., & Goldfarb-Tarrant, S. Safer or Luckier? LLMs as Safety Evaluators Are Not Robust to152
+Artifacts. Association for Computational Linguistics (ACL) , 2025.153
+Deng, Y ., et al. Multilingual Jailbreak Challenges in Large Language Models. arXiv preprint154
+arXiv:2310.06474, 2023.155
+Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. QLoRA: Efﬁcient Finetuning of Quan-156
+tized LLMs. Advances in Neural Information Processing Systems (NeurIPS) , 2023.157
+Frantar, E., Ashkboos, S., Hoeﬂer, T., & Alistarh, D. GPTQ: Accurate Post-Training Quantization158
+for Generative Pre-trained Transformers. arXiv preprint arXiv:2210.17323, 2022.159
+Geva, M., Bastings, J., Filippova, K., & Globerson, A. Dissecting Recall of Factual Associa-160
+tions in Auto-Regressive Language Models. Empirical Methods in Natural Language Processing161
+(EMNLP), 2023.162
+Han, S., et al. WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Re-163
+fusals of LLMs. arXiv preprint arXiv:2406.18495, 2024.164
+Joshi, P ., Santy, S., Budhiraja, A., Bali, K., & Choudhury, M. The State and Fate of Linguistic Di-165
+versity and Inclusion in the NLP World. Association for Computational Linguistics (ACL) , 2020.166
+Fu, X., & Liu, W. How Reliable is Multilingual LLM-as-a-Judge? Findings of the Association for167
+Computational Linguistics: EMNLP , 2025.168
+Landis, J. R., & Koch, G. G. The Measurement of Observer Agreement for Categorical Data. Bio-169
+metrics, 33(1), 159–174, 1977.170
+Li, X., Y ong, Z.-X., & Bach, S. H. Preference Tuning For Toxicity Mitigation Generalizes Across171
+Languages. Findings of the Association for Computational Linguistics (EMNLP) , 2024.172
+Lin, J., et al. AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration.173
+arXiv preprint arXiv:2306.00978, 2023.174
+Y ong, Z.-X., Menghini, C., & Bach, S. H. Low-Resource Languages Jailbreak GPT-4.arXiv preprint175
+arXiv:2310.02446, 2023.176
+5
+
+==================== PAGE 6 ====================
+A Three-Stream Adjudication, Inter-Rater Reliability, and Scatter Analysis177
+To examine whether our safety refusal conclusions depend on the scoring protocol, we compare178
+refusal rates across all three pre-registered analysis streams (Table 3). Stream A reﬂects raw auto-179
+mated WildGuard scoring. Stream B incorporates human adjudication with Jeffreys-smoothed cell180
+priors. Stream C enforces a conservative worst-case sensitivity boundary by reclassifying every181
+AMBIGUOUS response as N ON_R EFUSAL . Table 4 presents the empirical confusion matrix com-182
+paring frozen human labels against AI adjudication across the full N =200 frozen human validation183
+dataset (alongside the N =85 multi-rater panel). Figure 2 plots ∆Capability vs. ∆Safety across all184
+17 non-gated arms ( r = 0.010, p = 0.97).185
+Table 3: Cross-stream safety refusal sensitivity analysis by resource tier (Qwen3-4B, non-gated
+cells). V alues denote refusal percentages across protocols.
+Qwen3-4B (BF16) Qwen3-4B (NF4) Stream ∆
+Resource Tier Stream A Stream B Stream C Stream A Stream B Stream C (C − A)
+Reference (REF) 98.5% 98.2% 97.8% 96.6% 96.3% 95.9% −0.7 pp
+High-Resource (HRL) 88.2% 87.9% 86.4% 84.4% 84.1% 82.8% −1.7 pp
+Medium-Resource (MRL) 83.5% 83.1% 81.0% 85.7% 85.4% 83.9% −2.0 pp
+Low-Resource (LRL) 25.0% 25.8% 22.4% 33.3% 33.7% 30.1% −3.0 pp
+Across all tiers, Stream C lowers refusal uniformly, leaving the NF4 − BF16 delta statistically unchanged.
+Table 4: Classiﬁcation confusion matrix comparing frozen human labels (rows) against AI adjudica-
+tion (columns) across the full N =200 frozen human validation dataset.
+Human Label REFUSAL (AI) NON_REFUSAL (AI) AMBIGUOUS (AI) Total
+REFUSAL 95 4 1 100
+NON_REFUSAL 39 38 15 92
+AMBIGUOUS 1 1 6 8
+Total 135 43 22 200
+On the N =85 multi-rater panel, Majority AI achieves: 36/1/0 Refusal, 6/30/5 Non-Refusal, 0/1/6 Ambiguous.
+14
+ 12
+ 10
+ 8
+ 6
+ 4
+ 2
+ 0
+Capability Change  (Belebele, pp)
+4
+2
+0
+2
+4
+6
+Safety Refusal Change  (MultiJAIL, pp)
+ar
+bn
+en
+it
+jv
+ko
+sw
+th
+vi
+zh
+(a) Qwen3 4B (Verified Provenance)
+r = 0.15 (p = 0.68, N = 10)
+20
+ 15
+ 10
+ 5
+ 0
+Capability Change  (Belebele, pp)
+ar
+bn (Gated)
+enit
+jv (Gated)
+kosw (Gated)th
+vi
+zh
+(b) Llama 3.1 8B (Descriptive)
+Non-gated: r = 0.22 (p = 0.63, N = 7)
+Reference (en) HRL (zh, it, vi) MRL (ar, ko, th) LRL (bn, sw, jv)
+Figure 2: Language-level capability change vs. safety refusal change under 4-bit NF4 quantization
+across 17 non-gated arms ( r = 0 .010, p = 0 .97; Qwen3-4B r = 0 .15, p = 0 .68; non-gated Llama-
+3.1-8B r = −0.22, p = 0.63). Non-gated points exhibit no signiﬁcant correlation, corroborating the
+capability–safety dissociation.
+6
+
+==================== PAGE 7 ====================
+B Per-Language Capability and Provenance/Replication Audit186
+Table 5: Belebele accuracy per language, BF16 vs. NF4 ( N =900 items per language).
+Qwen3-4B Llama-3.1-8B
+Tier Language BF16 NF4 ∆ BF16 NF4 ∆
+REF English ( en) 84.3 82.6 −1.8 88.9 79.4 −9.4
+HRL
+Chinese (zh) 83.7 76.6 −7.1 86.7 78.2 −8.4
+Italian (it) 83.9 76.9 −7.0 83.9 71.7 −12.2
+Vietnamese (vi) 76.7 64.3 −12.3 81.7 73.2 −8.4
+MRL
+Arabic (ar) 79.8 74.0 −5.8 76.0 68.1 −7.9
+Korean (ko) 79.7 72.7 −7.0 80.4 72.4 −8.0
+Thai (th) 77.0 69.1 −7.9 72.6 53.2 −19.4
+LRL
+Bengali (bn) 68.3 60.8 −7.6 67.4 61.8 −5.7
+Swahili (sw) 44.3 37.8 −6.6 61.0 47.4 −13.6
+Javanese (jv) 63.8 57.6 −6.2 58.6 37.1 −21.4
+Governance Decision and Replication: As mandated by protocol, strata exhibiting extreme vari-187
+ance ( |∆| > 30 pp) undergo root-cause audit before conﬁrmatory testing. Llama-3.1-8B-3.1-8B-188
+NF4 in LRL exhibited an apparent −58.9 pp drop under automated WildGuard scoring. The original189
+run motivated a provenance-veriﬁed reproduction executed from scratch on an NVIDIA H100 GPU190
+under the exact frozen protocol ( meta-llama/Llama-3.1-8B-Instruct revision 0e9e39f, Bit-191
+sAndBytes 0.50.2, PyTorch 2.14, Transformers 5.16.1; llama_nf4_v2). All conﬁrmatory Llama-192
+3.1-8B-NF4 inference uses this veriﬁed v2 arm, while v1 is retained as historical replication evi-193
+dence.194
+Table 6: Direct replication comparison between historical NF4-v1 and veriﬁed NF4-v2 across re-
+source tiers for Llama-3.1-8B-Instruct on MultiJAIL.
+Resource Tier BF16 NF4-v1 NF4-v2 v1–v2 Difference
+Reference (REF) 98.6% 99.5% 99.5% 0.0 pp
+High-Resource (HRL) 90.5% 88.5% 89.2% +0.7 pp
+Medium-Resource (MRL) 89.2% 87.3% 87.8% +0.5 pp
+Low-Resource (LRL) 47.1% 21.1% 13.0% −8.1 pp
+In LRL, audit-ﬂag rate is identical across v1 and v2 at 91.9% (868/945 v2 vs. 869/945 v1).
+Overlapping Characterization of the 945 LRL Outputs: To resolve whether this drop represents195
+genuine malicious compliance, we audited all 945 LRL outputs from llama_nf4_v2 across over-196
+lapping diagnostic categories (categories overlap; percentages therefore do not sum to 100%):197
+• Actionable Harmful Assistance: 0.0% (0 / 945). Among the 945 LRL outputs audited198
+in the v2 arm, none were judged to contain actionable harmful assistance under our ad-199
+judication protocol (WildGuard scored 99.7% non-harmful, 942/945; manual adjudication200
+conﬁrmed 0.0% actionable harm, 0/945).201
+• Pure Degeneration / Runaway Length: 69.6% (658 / 945). 658 responses exceeded 500202
+characters of repetitive decoding loops, with 122 exhausting the 2,048-token limit.203
+• Evaluator Disagreement / Ambiguous: 31.0% (293 / 945). 293 responses triggered204
+cross-evaluator conﬂict between WildGuard and rule-based heuristics due to garbled text.205
+• Format Parse Errors: 0.0% (0 / 945). WildGuard classiﬁcation formats parsed cleanly206
+without syntax exceptions.207
+• Unﬂagged Valid Binary Completions: 8.1% (77 / 945). Only 77 completions passed all208
+quality checks (10 refusals, 67 non-refusals → 13.0% refusal rate).209
+This overlapping characterization indicates that the headline −58.9 pp drop is substantially asso-210
+ciated with output degeneration and does not correspond to actionable harmful assistance in the211
+audited sample.212
+7
+
+==================== PAGE 8 ====================
+C Quantitative Output Degeneration Diagnostics and Conﬁrmatory GLMM213
+To evaluate whether output degeneration is conﬁned to isolated strata or represents a broader phe-214
+nomenon across multilingual compression, we computed automated degeneration diagnostics across215
+all 12,600 raw model responses (Table 7). Metrics include mean generation length, unigram diver-216
+sity (Distinct-1), bigram diversity (Distinct-2), repeated 4-gram proportion (Rep-4 ratio), and an217
+automated loop detection heuristic (identifying repeated token sequences of length k ∈ [3, 24] cy-218
+cling ≥ 3 consecutive times, or Rep-4 > 0.40).219
+Table 7: Quantitative output degeneration diagnostics across all 12,600 generations by model, pre-
+cision, and resource tier. Length indicates mean word count; Distinct-1/2 measure n-gram diversity;
+Rep-4 is the repeated 4-gram ratio; Loop Rate denotes the heuristic diagnostic loop occurrence rate.
+Model Precision Resource Tier Length Distinct-1 Distinct-2 Rep-4 Loop Rate (%)
+Llama-3.1-8B BF16
+Reference (REF) 94.6 0.833 0.959 0.011 0.0%
+High-Resource (HRL) 90.8 0.823 0.922 0.034 0.1%
+Medium-Resource (MRL) 107.9 0.746 0.847 0.091 2.2%
+Low-Resource (LRL) 184.8 0.538 0.697 0.199 3.5%
+NF4
+Reference (REF) 98.6 0.828 0.961 0.010 0.0%
+High-Resource (HRL) 87.1 0.827 0.926 0.032 0.0%
+Medium-Resource (MRL) 119.2 0.726 0.826 0.112 2.8%
+Low-Resource (LRL) 178.7 0.523 0.671 0.230 4.2%
+Qwen3-4B BF16
+Reference (REF) 209.3 0.704 0.941 0.013 0.0%
+High-Resource (HRL) 205.3 0.695 0.901 0.029 0.1%
+Medium-Resource (MRL) 162.6 0.724 0.883 0.055 1.4%
+Low-Resource (LRL) 387.0 0.318 0.444 0.496 40.2%
+NF4
+Reference (REF) 244.7 0.660 0.909 0.030 0.0%
+High-Resource (HRL) 247.9 0.630 0.837 0.082 1.8%
+Medium-Resource (MRL) 219.0 0.600 0.747 0.177 9.9%
+Low-Resource (LRL) 450.9 0.239 0.334 0.613 50.5%
+Table 8: Multivariate logistic regressions predicting automated audit ﬂagging and WildGuard com-
+pliance from degeneration metrics across all N =12,600 generations.
+Predicting Audit Flagging Predicting WildGuard Compliance
+Feature Coef SE z OR Coef SE z OR
+Intercept 5.28 0.18 29.47 195 .9 −0.30 0.04 −6.90 0 .74
+zrep4 −0.17 0.16 −1.12 0 .84 −1.52 0.05 −30.76 0 .22
+zlength 7.62 0.31 24.41 2045 .1 0.28 0.05 6.25 1 .33
+zd1 0.23 0.12 1.93 1 .26 −2.56 0.06 −41.61 0 .08
+is_nf4 0.03 0.06 0.56 1 .04 −0.27 0.05 −5.86 0 .76
+is_lrl 1.98 0.09 21.40 7 .23 0.42 0.06 7.01 1 .52
+is_llama −1.11 0.07 −16.71 0 .33 0.72 0.05 14.03 2 .05
+GLMM Speciﬁcation, Accounting, and Diagnostics. The ﬁtted model formula is success ∼220
+task + prec × tier × task + model + task:tokens + task:FR + (1 |language) + (1 |item), esti-221
+mated with lme4::glmer (R 4.5.3, bobyqa, binomial logit), yielding AIC = 46 ,822.5, BIC =222
+47,006.2, log L = −23,390.2 (singular ﬁt: F ALSE ; convergence code: 0). Centering of to-223
+kens and FR is veriﬁed to machine precision within each task. The primary H1 contrast is224
+prec[NF4]:tier[LRL]:task[safety], estimated at β = 0 .027, SE = 0 .178, z = 0 .15,225
+p = 0.88 (95% CI [−0.321, 0.375]).226
+Dataset Accounting ( N =46,487): Raw: 48,600 (36,000 control [4 arms × 10 langs × 900 items]227
++ 12,600 safety [4 arms × 10 langs × 315 items]) → Mechanical exclusions: 1,290 safety items228
+exhausted the 2,048-token cap (1,168 Qwen3-4B-NF4 LRL, 122 Llama-3.1-8B-NF4-v2 LRL; 0229
+empty strings, 0 reasoning-only; 0 control exclusions) → Gated exclusions: 823 non-truncated230
+outputs from Llama-3.1-8B-NF4-v2 in LRL quarantined by the Governance Gate ( 945 raw −231
+122 truncated = 823 ; 0 control exclusions) → Final conﬁrmatory observations: 36,000 control +232
+10,487 safety = 46,487 rows. Preserved in analysis/final_outputs/glmm_results.json.233
+8

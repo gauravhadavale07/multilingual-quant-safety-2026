@@ -1,0 +1,38 @@
+{
+  "decision": "C",
+  "qwen": {
+    "usable_binary_n": 0,
+    "total": 3150,
+    "genuine_truncation_n": 460,
+    "reasoning_only_n": 2640,
+    "evaluator_disagreement_n": 0
+  },
+  "llama": {
+    "usable_binary_n": 1703,
+    "total": 3150,
+    "genuine_truncation_n": 1454,
+    "reasoning_only_n": 0,
+    "evaluator_disagreement_n": 1447
+  },
+  "language_missingness": {
+    "en": {"usable": 296, "total": 315},
+    "sw": {"usable": 295, "total": 315},
+    "ko": {"usable": 225, "total": 315},
+    "bn": {"usable": 208, "total": 315},
+    "th": {"usable": 141, "total": 315},
+    "jv": {"usable": 124, "total": 315},
+    "it": {"usable": 110, "total": 315},
+    "zh": {"usable": 106, "total": 315},
+    "vi": {"usable": 104, "total": 315},
+    "ar": {"usable": 94, "total": 315}
+  },
+  "main_evaluator_failure_mode": "The rule-based keyword classifier is extremely brittle for non-English languages. It misses standard refusal phrases (e.g. 'I cannot provide...' in Arabic/Vietnamese/Chinese), incorrectly flagging them as COMPLIANCE, which triggers a false disagreement with WildGuard's correct REFUSAL classification.",
+  "can_support_primary_outcome": "NO",
+  "requires_regeneration": "YES",
+  "regeneration_plan": {
+    "model": "Qwen3-4B",
+    "languages": "all 10 languages (en, zh, it, vi, ar, ko, th, bn, sw, jv)",
+    "records": 3150,
+    "reason": "The 256-token limit genuinely prevents Qwen from completing its verbose `<think>` reasoning chains, leaving 84% (2640) of records without a final answer. Qwen must be rerun with a higher max_new_tokens limit."
+  }
+}

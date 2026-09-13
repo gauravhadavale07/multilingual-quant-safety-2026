@@ -1,0 +1,80 @@
+{
+  "task": "TASK 29 — PRE-NF4 QWEN LRL VALIDITY / ESTIMAND DECISION",
+  "decision": "B",
+  "decision_label": "KEEP V4 BUT RESTRICT PRIMARY QWEN TIER INFERENCE",
+  "nf4_gate": "PROCEED",
+  "frozen_protocol": {
+    "model_id": "Qwen/Qwen3-4B",
+    "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+    "dataset_revision": "577ac511437e07a256130945ef312a99158a18ad",
+    "enable_thinking": false,
+    "do_sample": false,
+    "max_new_tokens": 8192,
+    "seed": 42
+  },
+  "missingness_summary": {
+    "total_records": 3150,
+    "primary_usable_records": 2747,
+    "excluded_records": 403,
+    "exclusion_rate": 0.12793650793650794,
+    "primary_refusal_count": 1346,
+    "primary_refusal_rate": 0.48998907899526756
+  },
+  "tier_breakdown": {
+    "reference": {
+      "languages": ["en"],
+      "total": 315,
+      "usable": 315,
+      "excluded": 0,
+      "exclusion_pct": 0.0,
+      "refusals": 216,
+      "refusal_rate_usable": 0.6857142857142857
+    },
+    "HRL": {
+      "languages": ["zh", "it", "vi"],
+      "total": 945,
+      "usable": 943,
+      "excluded": 2,
+      "exclusion_pct": 0.21164021164021163,
+      "refusals": 511,
+      "refusal_rate_usable": 0.5418875927889714
+    },
+    "MRL": {
+      "languages": ["ar", "ko", "th"],
+      "total": 945,
+      "usable": 932,
+      "excluded": 13,
+      "exclusion_pct": 1.3756613756613756,
+      "refusals": 451,
+      "refusal_rate_usable": 0.4839055793991416
+    },
+    "LRL": {
+      "languages": ["bn", "sw", "jv"],
+      "total": 945,
+      "usable": 557,
+      "excluded": 388,
+      "exclusion_pct": 41.05820105820106,
+      "refusals": 168,
+      "refusal_rate_usable": 0.3016157989228007
+    }
+  },
+  "language_breakdown": {
+    "en": {"tier": "reference", "total": 315, "usable": 315, "excluded": 0, "exclusion_pct": 0.0, "refusals": 216, "refusal_rate_usable": 0.6857142857142857},
+    "zh": {"tier": "HRL", "total": 315, "usable": 315, "excluded": 0, "exclusion_pct": 0.0, "refusals": 198, "refusal_rate_usable": 0.6285714285714286},
+    "it": {"tier": "HRL", "total": 315, "usable": 314, "excluded": 1, "exclusion_pct": 0.31746031746031744, "refusals": 160, "refusal_rate_usable": 0.5095541401273885},
+    "vi": {"tier": "HRL", "total": 315, "usable": 314, "excluded": 1, "exclusion_pct": 0.31746031746031744, "refusals": 153, "refusal_rate_usable": 0.4872611464968153},
+    "ar": {"tier": "MRL", "total": 315, "usable": 311, "excluded": 4, "exclusion_pct": 1.2698412698412698, "refusals": 148, "refusal_rate_usable": 0.47588424437299033},
+    "ko": {"tier": "MRL", "total": 315, "usable": 307, "excluded": 8, "exclusion_pct": 2.5396825396825395, "refusals": 128, "refusal_rate_usable": 0.4169381107491857},
+    "th": {"tier": "MRL", "total": 315, "usable": 314, "excluded": 1, "exclusion_pct": 0.31746031746031744, "refusals": 175, "refusal_rate_usable": 0.5573248407643312},
+    "bn": {"tier": "LRL", "total": 315, "usable": 246, "excluded": 69, "exclusion_pct": 21.904761904761905, "refusals": 107, "refusal_rate_usable": 0.4349593495934959},
+    "sw": {"tier": "LRL", "total": 315, "usable": 18, "excluded": 297, "exclusion_pct": 94.28571428571428, "refusals": 0, "refusal_rate_usable": 0.0},
+    "jv": {"tier": "LRL", "total": 315, "usable": 293, "excluded": 22, "exclusion_pct": 6.984126984126984, "refusals": 61, "refusal_rate_usable": 0.20819112627986348}
+  },
+  "methodological_rules": [
+    "Preserve v4 baseline as immutable.",
+    "Report unconstrained language-level descriptive estimates across all 10 languages.",
+    "Formally qualify resource-tier pooling in GLMM due to informative LRL missingness.",
+    "Report complete-case GLMM alongside worst-case and best-case sensitivity bounds.",
+    "Execute Qwen NF4 under identical greedy generation settings."
+  ]
+}

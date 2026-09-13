@@ -1,0 +1,191 @@
+{
+  "status": "SUCCESS",
+  "formula": "success ~ task_type + precision * resource_tier * task_type + task_type:(centered_input_token_count + centered_fragmentation_ratio) + model_name + (1 | language) + (1 | dataset_specific_source_item)",
+  "n_rows": 46487,
+  "n_safety": 10487,
+  "n_control": 36000,
+  "elapsed_seconds": 1267.4649,
+  "is_singular": false,
+  "aic": 46822.4967,
+  "bic": 47006.1821,
+  "log_likelihood": -23390.2483,
+  "h1_focal_contrast": {
+    "term": [],
+    "estimate": [],
+    "std_error": [],
+    "z_value": [],
+    "p_value": []
+  },
+  "coefficients": [
+    {
+      "term": "(Intercept)",
+      "estimate": 1.8728,
+      "std_error": 0.1744,
+      "z_value": 10.7403,
+      "p_value": 6.5857e-27,
+      "_row": "(Intercept)"
+    },
+    {
+      "term": "task_typesafety",
+      "estimate": -1.3409,
+      "std_error": 0.1156,
+      "z_value": -11.6038,
+      "p_value": 3.944e-31,
+      "_row": "task_typesafety"
+    },
+    {
+      "term": "precisionint4_nf4",
+      "estimate": -0.7419,
+      "std_error": 0.052,
+      "z_value": -14.262,
+      "p_value": 3.7749e-46,
+      "_row": "precisionint4_nf4"
+    },
+    {
+      "term": "resource_tierreference",
+      "estimate": 0.3226,
+      "std_error": 0.3358,
+      "z_value": 0.9609,
+      "p_value": 0.3366,
+      "_row": "resource_tierreference"
+    },
+    {
+      "term": "resource_tierMRL",
+      "estimate": -0.3723,
+      "std_error": 0.236,
+      "z_value": -1.5776,
+      "p_value": 0.1147,
+      "_row": "resource_tierMRL"
+    },
+    {
+      "term": "resource_tierLRL",
+      "estimate": -1.3045,
+      "std_error": 0.2375,
+      "z_value": -5.4918,
+      "p_value": 3.9795e-08,
+      "_row": "resource_tierLRL"
+    },
+    {
+      "term": "model_nameLlama-3.1-8B-Instruct",
+      "estimate": 0.0395,
+      "std_error": 0.0247,
+      "z_value": 1.5988,
+      "p_value": 0.1099,
+      "_row": "model_nameLlama-3.1-8B-Instruct"
+    },
+    {
+      "term": "precisionint4_nf4:resource_tierreference",
+      "estimate": 0.2445,
+      "std_error": 0.1123,
+      "z_value": 2.1768,
+      "p_value": 0.0295,
+      "_row": "precisionint4_nf4:resource_tierreference"
+    },
+    {
+      "term": "precisionint4_nf4:resource_tierMRL",
+      "estimate": 0.136,
+      "std_error": 0.071,
+      "z_value": 1.9142,
+      "p_value": 0.0556,
+      "_row": "precisionint4_nf4:resource_tierMRL"
+    },
+    {
+      "term": "precisionint4_nf4:resource_tierLRL",
+      "estimate": 0.193,
+      "std_error": 0.068,
+      "z_value": 2.8392,
+      "p_value": 0.0045,
+      "_row": "precisionint4_nf4:resource_tierLRL"
+    },
+    {
+      "term": "task_typesafety:precisionint4_nf4",
+      "estimate": 0.7042,
+      "std_error": 0.0983,
+      "z_value": 7.1624,
+      "p_value": 7.9292e-13,
+      "_row": "task_typesafety:precisionint4_nf4"
+    },
+    {
+      "term": "task_typesafety:resource_tierreference",
+      "estimate": 0.6055,
+      "std_error": 0.1531,
+      "z_value": 3.9553,
+      "p_value": 0.0001,
+      "_row": "task_typesafety:resource_tierreference"
+    },
+    {
+      "term": "task_typesafety:resource_tierMRL",
+      "estimate": -0.2853,
+      "std_error": 0.0989,
+      "z_value": -2.8836,
+      "p_value": 0.0039,
+      "_row": "task_typesafety:resource_tierMRL"
+    },
+    {
+      "term": "task_typesafety:resource_tierLRL",
+      "estimate": -0.7659,
+      "std_error": 0.115,
+      "z_value": -6.6608,
+      "p_value": 2.724e-11,
+      "_row": "task_typesafety:resource_tierLRL"
+    },
+    {
+      "term": "task_typecontrol:centered_input_token_count",
+      "estimate": -0.0004,
+      "std_error": 0.0001,
+      "z_value": -2.6436,
+      "p_value": 0.0082,
+      "_row": "task_typecontrol:centered_input_token_count"
+    },
+    {
+      "term": "task_typesafety:centered_input_token_count",
+      "estimate": 0.0037,
+      "std_error": 0.0013,
+      "z_value": 2.9051,
+      "p_value": 0.0037,
+      "_row": "task_typesafety:centered_input_token_count"
+    },
+    {
+      "term": "task_typesafety:precisionint4_nf4:resource_tierreference",
+      "estimate": -0.2177,
+      "std_error": 0.2115,
+      "z_value": -1.0295,
+      "p_value": 0.3033,
+      "_row": "task_typesafety:precisionint4_nf4:resource_tierreference"
+    },
+    {
+      "term": "task_typesafety:precisionint4_nf4:resource_tierMRL",
+      "estimate": -0.0567,
+      "std_error": 0.1369,
+      "z_value": -0.4142,
+      "p_value": 0.6787,
+      "_row": "task_typesafety:precisionint4_nf4:resource_tierMRL"
+    },
+    {
+      "term": "task_typesafety:precisionint4_nf4:resource_tierLRL",
+      "estimate": 0.0272,
+      "std_error": 0.1775,
+      "z_value": 0.153,
+      "p_value": 0.8784,
+      "_row": "task_typesafety:precisionint4_nf4:resource_tierLRL"
+    }
+  ],
+  "variance_components": [
+    {
+      "grp": "dataset_specific_source_item",
+      "var1": "(Intercept)",
+      "vcov": 1.8513,
+      "sdcor": 1.3606
+    },
+    {
+      "grp": "language",
+      "var1": "(Intercept)",
+      "vcov": 0.0791,
+      "sdcor": 0.2813
+    }
+  ],
+  "convergence_diagnostics": {
+    "code": 0,
+    "messages": {}
+  }
+}

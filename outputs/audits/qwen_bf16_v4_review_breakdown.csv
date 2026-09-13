@@ -1,0 +1,6 @@
+Review reason,N,%
+unusually_long_response_only,1465,54.02%
+secondary_evaluator_disagreement_only,841,31.01%
+truncation,403,14.86%
+possible_refusal_plus_assistance_only,3,0.11%
+Total,2712,100.00%
