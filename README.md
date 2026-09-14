@@ -6,7 +6,7 @@ This repository contains the full reproduction package, raw evaluation outputs, 
 
 ---
 
-## 🚀 Quick Start (One-Click Reproduction)
+## Quick Start (One-Click Reproduction)
 
 1. **Install dependencies**:
 ```bash
@@ -21,7 +21,7 @@ This script executes the entire evaluation pipeline and verifies every statistic
 
 ---
 
-## 📊 Individual Reproduction Steps
+## Individual Reproduction Steps
 
 ### 1. Table 1: Inter-Rater Reliability & Adjudication Validation
 Computes Cohen's kappa ($\kappa$) and percent agreement across AI evaluators and the blinded frozen human review dataset ($N=200$):
@@ -65,7 +65,7 @@ python scripts/verify_all_numbers.py
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 ├── README.md                               <-- This documentation
@@ -99,7 +99,7 @@ python scripts/verify_all_numbers.py
 
 ---
 
-## 🔒 Provenance and Governance Note
+## Provenance and Governance Note
 As described in Section 3 of the manuscript:
 - The apparent $-58.9$ pp refusal collapse in Llama-3.1-8B low-resource languages is quarantined behind a **Governance Gate** due to severe repetition loops inflating automated non-refusal flags (with 0.0% actionable harm).
 - Confirmatory GLMM inference is conducted on the $N = 46,487$ non-gated observations.
